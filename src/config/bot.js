@@ -540,53 +540,5 @@ export function getRandomColor() {
 }
 
 export default botConfig;
-import { Client, GatewayIntentBits, REST, Routes } from 'discord.js';
-import { botConfig } from './config/bot.js';
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildVoiceStates,
-    ]
-});
 
-client.once('ready', async () => {
-    console.log(`✅ Бот ${client.user.tag} запущен!`);
-
-    const commands = [
-        {
-            name: 'setup',
-            description: 'Показать панель управления голосовым каналом',
-        }
-    ];
-
-    const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
-    try {
-        console.log('🔄 Регистрация команд...');
-        await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
-        console.log('✅ Команды зарегистрированы!');
-    } catch (error) {
-        console.error('❌ Ошибка регистрации:', error);
-    }
-});
-
-// ===== ОБРАБОТЧИК КОМАНД =====
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isCommand()) return;
-
-    if (interaction.commandName === 'setup') {
-        const embed = {
-            title: '⚡ Управление голосовым каналом',
-            description: `✦ Зайди в \`[Создать]\` — комната твоя.\n✦ Управляй кнопками — только для владельца.\n\n❖ Настройки                    ❖ Участники\n🔒 ﹒ Закрыть                   ✅ ﹒ Доступ\n🔓 ﹒ Открыть                   🚫 ﹒ Кик\n✏️ ﹒ Название                  ⛔ ﹒ Бан\n👥 ﹒ Лимит                     🔇 ﹒ Мут\n👑 ﹒ Владелец                  🎙️ ﹒ Размут`,
-            color: 0x2b2d31,
-            author: { name: 'FUN BOT' },
-            footer: { text: '⚡ FUN · Voice Control' }
-        };
-        await interaction.reply({ embeds: [embed] });
-    }
-});
-
-// ===== ЗАПУСК =====
-client.login(MTUyNTQwNDMyNDcyODAxNzAwNg.GIY8WN.lKPgNB7z8F7yAlUPgr6wHiWWn-o2IyUVpEfors);
